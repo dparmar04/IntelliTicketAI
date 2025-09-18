@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import jwt, { decode } from "jsonwebtoken"
-import User from "../models/user"
-import { inngest } from "../inngest/client"
+import User from "../models/user.js"
+import { inngest } from "../inngest/client.js"
 
 export const signup = async (req, res) => {
   const { email, password, skills = [] } = req.body
