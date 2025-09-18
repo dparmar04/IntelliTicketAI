@@ -1,9 +1,6 @@
-import req from "express/lib/request";
-import {} from "../inngest/client.js";
+import { inngest } from "../inngest/client.js";
 import Ticket from "../models/ticket.js";
-import res from "express/lib/response.js";
 
-// Create Ticket
 export const createTicket = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -20,7 +17,7 @@ export const createTicket = async (req, res) => {
 
     await inngest.send({
       name: "ticket/created",
-      date: {
+      data: {
         ticketId: (await newTicket)._id.toString(),
         title,
         description,
@@ -37,17 +34,16 @@ export const createTicket = async (req, res) => {
   }
 };
 
-// Get Tickets
 export const getTickets = async (req, res) => {
   try {
     const user = req.user;
     let tickets = [];
     if (user.role !== "user") {
-      Ticket.find({})
+      tickets = Ticket.find({})
         .populate("assignedTo", ["email", "_id"])
         .sort({ createdAt: -1 });
     } else {
-      await Ticket.find({ createdBy: user._id })
+      tickets = await Ticket.find({ createdBy: user._id })
         .select("title description status createdAt")
         .sort({ createdAt: -1 });
     }
@@ -58,23 +54,25 @@ export const getTickets = async (req, res) => {
   }
 };
 
-// Get one Ticket
 export const getTicket = async (req, res) => {
   try {
     const user = req.user;
     let ticket;
 
     if (user.role !== "user") {
-      Ticket.findById(req.params.id).populate("assignedTo", ["email", "_id"]);
+      ticket = Ticket.findById(req.params.id).populate("assignedTo", [
+        "email",
+        "_id",
+      ]);
     } else {
-      Ticket.findOne({
+      ticket = Ticket.findOne({
         createdBy: user._id,
         _id: req.params.id,
       }).select("title description status createdAt");
     }
 
     if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found " });
+      return res.status(404).json({ message: "Ticket not found" });
     }
     return res.status(404).json({ ticket });
   } catch (error) {
