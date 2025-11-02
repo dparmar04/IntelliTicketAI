@@ -64,7 +64,7 @@ export default function UserList() {
               {user.role === "sales" && (
                 <p>
                   Created:{" "}
-                  {dbSnapshot.tickets?.filter((t: Ticket) => t.createdBy === user.id).length} tickets
+                  {dbSnapshot.tickets?.filter((t: Ticket) => t.createdBy === (user.id || "")).length} tickets
                 </p>
               )}
             </div>

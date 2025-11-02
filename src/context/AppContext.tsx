@@ -28,10 +28,11 @@ export interface AppContextType {
   setSuccess: Dispatch<SetStateAction<string>>;
 
   handleLogin: (email: string, password: string) => Promise<void>;
-  handleSignup: (email: string, password: string, name: string, role: string) => Promise<void>;
+  handleSignup: (payload: { name: string; email: string; password: string; role: string }) => Promise<void>;
+
   handleLogout: () => void;
 
-  handleCreateTicket: (ticket: Partial<Ticket>) => Promise<void>;
+  handleCreateTicket: (ticketForm: TicketForm) => Promise<void>;
   handleDeleteTicket: (ticketId: string) => Promise<void>;
   handleUpdateTicketStatus: (ticketId: string, status: string) => Promise<void>;
   handleReassignTicket: (ticketId: string, userId: string) => Promise<void>;
@@ -145,7 +146,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       setTimeout(() => setSuccess(""), 3000);
       refreshSnapshot();
     } catch (err) {
-      setError("Network error", err);
+      setError("Network error");
+      console.error(err);
     }
   };
 
@@ -211,6 +213,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       refreshSnapshot();
     } catch (err) {
       setError("Network error");
+      console.error(err);
     }
   };
 
@@ -223,6 +226,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       refreshSnapshot();
     } catch (err) {
       setError("Network error");
+      console.error(err);
     }
   };
 
@@ -238,6 +242,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       refreshSnapshot();
     } catch (err) {
       setError("Network error");
+      console.error(err);
     }
   };
 
@@ -256,6 +261,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       refreshSnapshot();
     } catch (err) {
       setError("Network error");
+      console.error(err);
     }
   };
 
