@@ -12,7 +12,6 @@ const {
 // ✅ Create ticket (auto-classify, AI description, assign skilled agent)
 router.post('/', async (req, res) => {
   try {
-    console.log("🧾 Incoming Ticket Body:", req.body);
 
     const { title, description, customerEmail, customerName, createdBy } = req.body;
 
@@ -45,13 +44,12 @@ router.post('/', async (req, res) => {
 
        **Problem Description**:
 
+      **Details**:
 
-**Details**:
-
-**Action Affected**: 
-**Error Message**: 
-**Reproducibility**: 
-**Environment Details** (please provide):
+      **Action Affected**: 
+      **Error Message**: 
+      **Reproducibility**: 
+      **Environment Details** (please provide):
 
        ". FOllow THE STRICT FORMAT AND GIVE ME ALL THE PARAMS POSSIBLE. `
     );

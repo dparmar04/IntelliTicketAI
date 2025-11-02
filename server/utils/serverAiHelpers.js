@@ -108,7 +108,7 @@ async function assignBestAgent(requiredSkills = []) {
     scoredAgents.sort((a, b) => b.score - a.score);
 
     // Debug: log skill matching
-    console.log("🧠 Agent skill matching:");
+
     scoredAgents.forEach(({ agent, score }) => {
       console.log(` - ${agent.name}: score ${score}, skills: ${agent.skills}`);
     });
@@ -116,7 +116,7 @@ async function assignBestAgent(requiredSkills = []) {
     // Pick agent with highest score, or random fallback
     const best = scoredAgents[0];
     if (best.score === 0) {
-      console.warn("⚠️ No matching skills found — assigning random skilled agent.");
+      // console.warn("⚠️ No matching skills found — assigning random skilled agent.");
       return agents[Math.floor(Math.random() * agents.length)];
     }
 

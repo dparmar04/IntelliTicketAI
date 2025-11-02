@@ -11,7 +11,7 @@ import UserList from "../components/Users/UserList";
 import PendingApprovals from "../components/Users/PendingApprovals";
 
 function AppContent() {
-  const { screen, activeTab, currentUser } = useAppContext();
+  const { screen, activeTab } = useAppContext();
 
   if (screen === "login") return <Login />;
   if (screen === "signup") return <Signup />;

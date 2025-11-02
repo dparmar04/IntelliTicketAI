@@ -9,8 +9,15 @@ export default function Login() {
 
   const submit = () => handleLogin(form.email, form.password);
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submit();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4" onKeyDown={handleKeyPress}>
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
         <div className="flex items-center justify-center mb-6">
           <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -30,7 +37,7 @@ export default function Login() {
               type="email"
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400"
+              className="w-full px-4 py-2 border outline-none rounded-lg focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400"
               placeholder="your@email.com"
             />
           </div>
@@ -40,17 +47,17 @@ export default function Login() {
               type="password"
               value={form.password}
               onChange={e => setForm({ ...form, password: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500
+              className="w-full px-4 py-2 border outline-none rounded-lg focus:ring-1 focus:ring-blue-500
               placeholder:text-gray-400"
               placeholder="••••••••"
             />
           </div>
-          <button onClick={submit} className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-medium">
+          <button onClick={submit} className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-medium cursor-pointer">
             Login
           </button>
           <p className="text-center text-sm text-gray-600">
             Don’t have an account?{" "}
-            <button onClick={() => setScreen("signup")} className="text-blue-600 hover:underline">
+            <button onClick={() => setScreen("signup")} className="text-blue-600 hover:underline cursor-pointer">
               Sign up
             </button>
           </p>
