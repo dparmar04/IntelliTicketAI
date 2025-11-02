@@ -1,12 +1,25 @@
 // src/components/Users/PendingApprovals.tsx
-import React from "react";
 import { AlertCircle, UserCheck, UserX } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
 import { getRoleBadgeColor } from "../../utils/uiHelper";
 
+interface User {
+  _id: string;
+  id?: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
 export default function PendingApprovals() {
-  const { dbSnapshot, handleApproveUser, handleRejectUser } = useAppContext();
-  const pending = dbSnapshot?.users?.filter(u => u.status === "pending");
+  const { dbSnapshot, handleApproveUser, handleRejectUser } = useAppContext() as {
+    dbSnapshot: { users?: User[] };
+    handleApproveUser: (id: string) => void;
+    handleRejectUser: (id: string) => void;
+  };
+
+  const pending = dbSnapshot?.users?.filter((u: User) => u.status === "pending");
 
   if (!pending?.length) return null;
 

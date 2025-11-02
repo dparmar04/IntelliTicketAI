@@ -1,7 +1,8 @@
 // src/components/Users/UserList.tsx
-import React from "react";
 import { useAppContext } from "../../context/AppContext";
 import { getRoleBadgeColor } from "../../utils/uiHelper";
+import type { User, Ticket } from "../../types/model";
+
 
 export default function UserList() {
   const { dbSnapshot } = useAppContext();
@@ -12,7 +13,7 @@ export default function UserList() {
         <h3 className="font-medium text-gray-900">All Users</h3>
       </div>
       <div className="divide-y divide-gray-200">
-        {dbSnapshot?.users?.map(user => (
+        {dbSnapshot?.users?.map((user: User) => (
           <div key={user.id} className="p-6 flex items-center justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
@@ -40,11 +41,11 @@ export default function UserList() {
                 >
                   {user.status.toUpperCase()}
                 </span>
-                {user.role === "skilled" && user.skills.length > 0 && (
+                {user.role === "skilled" && user.skills?.length ? (
                   <span className="text-xs text-gray-600">
-                    Skills: {user.skills.join(", ")}
+                    Skills: {user.skills?.join(", ")}
                   </span>
-                )}
+                ) : null}
               </div>
             </div>
 
@@ -53,8 +54,8 @@ export default function UserList() {
                 <p>
                   Assigned:{" "}
                   {
-                    dbSnapshot.tickets.filter(
-                      t => t.assignedTo === user.id && t.status !== "resolved"
+                    dbSnapshot.tickets?.filter(
+                      (t: Ticket) => t.assignedTo === user.id && t.status !== "resolved"
                     ).length
                   }{" "}
                   tickets
@@ -63,7 +64,7 @@ export default function UserList() {
               {user.role === "sales" && (
                 <p>
                   Created:{" "}
-                  {dbSnapshot.tickets.filter(t => t.createdbSnapshoty === user.id).length} tickets
+                  {dbSnapshot.tickets?.filter((t: Ticket) => t.createdBy === user.id).length} tickets
                 </p>
               )}
             </div>

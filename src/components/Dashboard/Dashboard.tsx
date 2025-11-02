@@ -2,22 +2,24 @@
 import { useAppContext } from "../../context/AppContext";
 import { Brain, Ticket, Clock, AlertCircle, CheckCircle, Zap } from "lucide-react";
 import { getStatusIcon, getPriorityColor } from "../../utils/uiHelper";
+import type { Ticket as TicketType } from "../../types/model";
+
 
 export default function Dashboard() {
   const { dbSnapshot, currentUser } = useAppContext();
 
-  const visibleTickets =
-    currentUser.role === "admin"
+  const visibleTickets: TicketType[] =
+    currentUser?.role === "admin"
       ? dbSnapshot?.tickets
-      : currentUser.role === "sales"
-        ? dbSnapshot?.tickets?.filter(t => t.createdBy === currentUser._id)
-        : dbSnapshot?.tickets?.filter(t => t.assignedTo === currentUser._id);
+      : currentUser?.role === "sales"
+        ? dbSnapshot?.tickets?.filter((t: TicketType) => t.createdBy === currentUser._id)
+        : dbSnapshot?.tickets?.filter((t: TicketType) => t.assignedTo === currentUser?._id);
 
   const stats = {
     total: visibleTickets?.length,
-    open: visibleTickets?.filter(t => t.status === "open").length,
-    inProgress: visibleTickets?.filter(t => t.status === "in-progress").length,
-    resolved: visibleTickets?.filter(t => t.status === "resolved").length,
+    open: visibleTickets?.filter((t: TicketType) => t.status === "open").length,
+    inProgress: visibleTickets?.filter((t: TicketType) => t.status === "in-progress").length,
+    resolved: visibleTickets?.filter((t: TicketType) => t.status === "resolved").length,
   };
 
   return (
@@ -85,8 +87,13 @@ export default function Dashboard() {
     </div>
   );
 }
+interface StatCardProps {
+  label: string;
+  value: number;
+  icon: React.ReactNode;
+}
 
-function StatCard({ label, value, icon }) {
+function StatCard({ label, value, icon }: StatCardProps) {
   return (
     <div className="bg-white rounded-lg p-6 border border-gray-200 flex justify-between items-center">
       <div>

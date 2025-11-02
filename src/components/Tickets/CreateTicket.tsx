@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 
 export default function CreateTicket() {
-  const { currentUser, handleCreateTicket, setError, setSuccess } = useAppContext();
+  const { handleCreateTicket, setError } = useAppContext();
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +13,12 @@ export default function CreateTicket() {
     }
 
     setLoading(true);
-    await handleCreateTicket({ title });
+    await handleCreateTicket({
+      title,
+      description: "",
+      category: "",
+      priority: ""
+    });
     setLoading(false);
   };
 

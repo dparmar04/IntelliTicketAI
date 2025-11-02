@@ -2,20 +2,28 @@
 import React from "react";
 import { Plus, X } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
+import type { Ticket } from "../../types/model";
+
+interface PerfCardProps {
+  label: string;
+  value: number | undefined;
+  color: "blue" | "yellow" | "green" | string;
+}
 
 export default function SkillManager() {
-  const { dbSnapshot, currentUser, setDbSnapshot, handleAddSkill, handleRemoveSkill } = useAppContext();
+  const { dbSnapshot, currentUser, handleAddSkill, handleRemoveSkill } = useAppContext();
   const [newSkill, setNewSkill] = React.useState("");
 
-  const visibleTickets = dbSnapshot?.tickets?.filter(t => t.assignedTo === currentUser._id);
+  const visibleTickets = dbSnapshot?.tickets?.filter((t: Ticket) => t.assignedTo === currentUser?._id);
   const addSkill = () => {
-    if (!newSkill.trim()) return;
-    handleAddSkill(newSkill.toLowerCase());
+    if (!newSkill.trim() || !currentUser?._id) return;
+    handleAddSkill(currentUser._id, newSkill.toLowerCase());
     setNewSkill('');
   };
 
   const removeSkill = (skill: string) => {
-    handleRemoveSkill(skill);
+    if (!currentUser?._id) return;
+    handleRemoveSkill(currentUser._id, skill);
   };
 
 
@@ -25,8 +33,8 @@ export default function SkillManager() {
       <div className="bg-white rounded-lg p-6 border border-gray-200">
         <h3 className="font-medium text-gray-900 mb-3">Current Skills</h3>
         <div className="flex flex-wrap gap-2 mb-6">
-          {currentUser.skills.length ? (
-            currentUser.skills.map(skill => (
+          {currentUser?.skills.length ? (
+            currentUser.skills.map((skill: string) => (
               <div key={skill} className="flex items-center space-x-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-lg">
                 <span className="font-medium">{skill}</span>
                 <button onClick={() => removeSkill(skill)} className="text-blue-600 hover:text-blue-800">
@@ -59,15 +67,15 @@ export default function SkillManager() {
         <h3 className="font-medium text-gray-900 mb-4">My Performance</h3>
         <div className="grid grid-cols-3 text-center">
           <PerfCard label="Total Assigned" value={visibleTickets?.length} color="blue" />
-          <PerfCard label="In Progress" value={visibleTickets?.filter(t => t.status === "in-progress").length} color="yellow" />
-          <PerfCard label="Resolved" value={visibleTickets?.filter(t => t.status === "resolved").length} color="green" />
+          <PerfCard label="In Progress" value={visibleTickets?.filter((t: Ticket) => t.status === "in-progress").length} color="yellow" />
+          <PerfCard label="Resolved" value={visibleTickets?.filter((t: Ticket) => t.status === "resolved").length} color="green" />
         </div>
       </div>
     </div>
   );
 }
 
-const PerfCard = ({ label, value, color }) => (
+const PerfCard: React.FC<PerfCardProps> = ({ label, value, color }) => (
   <div>
     <p className={`text-2xl font-bold text-${color}-600`}>{value}</p>
     <p className="text-sm text-gray-600">{label}</p>

@@ -20,8 +20,8 @@ export default function Header() {
         <div className="flex items-center space-x-4">
           <div className="text-right">
             <p className="text-sm font-medium text-gray-900">{currentUser?.name}</p>
-            <span className={`text-xs px-2 py-1 rounded-full ${currentUser.role}`}>
-              {currentUser.role.toUpperCase()}
+            <span className={`text-xs px-2 py-1 rounded-full ${currentUser?.role}`}>
+              {currentUser?.role.toUpperCase()}
             </span>
           </div>
           <button onClick={handleLogout} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">

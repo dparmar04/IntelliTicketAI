@@ -1,12 +1,54 @@
 // src/context/AppContext.tsx
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, type Dispatch, type SetStateAction } from "react";
+import type { User, Ticket, TicketForm } from "../types/model";
 
-type AppContextType = any;
+interface DBSnapshot {
+  users: User[];
+  tickets: Ticket[];
+}
+
+export interface AppContextType {
+  dbSnapshot: DBSnapshot;
+  setDbSnapshot: React.Dispatch<React.SetStateAction<DBSnapshot>>;
+  refreshSnapshot: () => void;
+
+  currentUser: User | null;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+
+  screen: "login" | "signup" | "app";
+  setScreen: Dispatch<SetStateAction<"login" | "signup" | "app">>;
+
+  activeTab: string;
+  setActiveTab: Dispatch<SetStateAction<string>>;
+
+  error: string;
+  setError: Dispatch<SetStateAction<string>>;
+
+  success: string;
+  setSuccess: Dispatch<SetStateAction<string>>;
+
+  handleLogin: (email: string, password: string) => Promise<void>;
+  handleSignup: (email: string, password: string, name: string, role: string) => Promise<void>;
+  handleLogout: () => void;
+
+  handleCreateTicket: (ticket: Partial<Ticket>) => Promise<void>;
+  handleDeleteTicket: (ticketId: string) => Promise<void>;
+  handleUpdateTicketStatus: (ticketId: string, status: string) => Promise<void>;
+  handleReassignTicket: (ticketId: string, userId: string) => Promise<void>;
+
+  handleApproveUser: (userId: string) => Promise<void>;
+  handleRejectUser: (userId: string) => Promise<void>;
+  handleAddSkill: (userId: string, skill: string) => Promise<void>;
+  handleRemoveSkill: (userId: string, skill: string) => Promise<void>;
+
+  API_BASE: string;
+}
+
 
 const AppContext = createContext<AppContextType | null>(null);
 
-export const AppProvider = ({ children }: any) => {
-  const [dbSnapshot, setDbSnapshot] = useState<any>({ users: [], tickets: [] });
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const [dbSnapshot, setDbSnapshot] = useState<DBSnapshot>({ users: [], tickets: [] });
   const [activeTab, setActiveTab] = useState("dashboard");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -53,7 +95,7 @@ export const AppProvider = ({ children }: any) => {
   }, []);
 
   // Restore user from localStorage
-  const [currentUser, setCurrentUser] = useState<any>(() => {
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const saved = localStorage.getItem("currentUser");
     return saved ? JSON.parse(saved) : null;
   });
@@ -103,7 +145,7 @@ export const AppProvider = ({ children }: any) => {
       setTimeout(() => setSuccess(""), 3000);
       refreshSnapshot();
     } catch (err) {
-      setError("Network error");
+      setError("Network error", err);
     }
   };
 
@@ -147,7 +189,7 @@ export const AppProvider = ({ children }: any) => {
   // ===============================
   // TICKET SECTION
   // ===============================
-  const handleCreateTicket = async (ticketForm: any) => {
+  const handleCreateTicket = async (ticketForm: TicketForm) => {
     setError("");
     try {
       const res = await fetch(`${API_BASE}/tickets`, {
@@ -155,7 +197,7 @@ export const AppProvider = ({ children }: any) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...ticketForm,
-          createdBy: currentUser._id || currentUser.id,
+          createdBy: currentUser?._id || currentUser?.id,
         }),
       });
       const data = await res.json();

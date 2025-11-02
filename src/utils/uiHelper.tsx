@@ -1,5 +1,4 @@
 // src/utils/uiHelpers.ts
-import React from "react";
 import { Clock, AlertCircle, CheckCircle } from "lucide-react";
 
 export const getPriorityColor = (priority: string) => {

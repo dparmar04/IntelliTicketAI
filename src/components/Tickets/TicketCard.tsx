@@ -1,11 +1,11 @@
 // src/components/Tickets/TicketCard.tsx
-import React from "react";
-import { Brain, Trash2, X } from "lucide-react";
+import { Brain, Trash2 } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
 import { getStatusIcon, getPriorityColor } from "../../utils/uiHelper"
 import Markdown from "react-markdown";
+import type { Ticket, User } from "../../types/model";
 
-export default function TicketCard({ ticket }) {
+export default function TicketCard({ ticket }: { ticket: Ticket }) {
   const {
     handleUpdateTicketStatus,
     handleDeleteTicket,
@@ -14,7 +14,7 @@ export default function TicketCard({ ticket }) {
     dbSnapshot
   } = useAppContext();
 
-  const skilledUsers = dbSnapshot?.users?.filter(u => u.role === "skilled" && u.status === "active");
+  const skilledUsers = dbSnapshot?.users?.filter((u: User) => u.role === "skilled" && u.status === "active");
 
   return (
     <div className="p-6">
@@ -51,7 +51,7 @@ export default function TicketCard({ ticket }) {
           </div>
 
           {/* Skilled Person Actions */}
-          {currentUser.role === "skilled" && ticket.status !== "resolved" && (
+          {currentUser?.role === "skilled" && ticket.status !== "resolved" && (
             <div className="mt-4 flex space-x-2">
               {ticket.status === "open" && (
                 <button
@@ -73,16 +73,16 @@ export default function TicketCard({ ticket }) {
           )}
 
           {/* Admin Reassignment */}
-          {currentUser.role === "admin" && (
+          {currentUser?.role === "admin" && (
             <div className="mt-4">
               <select
-                onChange={e => handleReassignTicket(ticket.id, parseInt(e.target.value))}
-                defaultValue={ticket.assignedTo}
+                onChange={e => handleReassignTicket(ticket.id, e.target.value)}
+                defaultValue={ticket.assignedTo ?? ""}
                 className="px-3 py-1 border border-gray-300 rounded text-sm"
               >
                 <option value="">Reassign to...</option>
-                {skilledUsers.map(u => (
-                  <option key={u.id} value={u.id}>
+                {skilledUsers.map((u: User) => (
+                  <option key={u.id} value={u.id ?? ""}>
                     {u.name} ({u.skills.join(", ")})
                   </option>
                 ))}
@@ -93,11 +93,13 @@ export default function TicketCard({ ticket }) {
 
         <div className="flex flex-col items-end space-y-2">
           <p className="text-sm text-gray-500">{new Date(ticket.createdAt).toLocaleString()}</p>
-          {(currentUser.role === "admin" || (currentUser.role === "sales" && ticket.createdBy === currentUser.id)) && (
-            <button onClick={() => handleDeleteTicket(ticket._id || ticket.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          )}
+          {
+            (currentUser?.role === "admin" ||
+              (currentUser?.role === "sales" && ticket.createdBy === (currentUser?.id ?? ""))) && (
+              <button onClick={() => handleDeleteTicket(ticket._id || ticket.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
         </div>
       </div>
     </div>

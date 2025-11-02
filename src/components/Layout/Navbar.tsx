@@ -3,9 +3,19 @@ import React from "react";
 import { useAppContext } from "../../context/AppContext";
 import { BarChart3, Ticket, Plus, Users, Settings } from "lucide-react";
 
+
+interface User {
+  _id: string;
+  name?: string;
+  email?: string;
+  role: "admin" | "sales" | "skilled" | string;
+  status?: "pending" | "active" | string;
+}
+
+
 export default function Navbar() {
   const { activeTab, setActiveTab, currentUser, dbSnapshot } = useAppContext();
-  const pendingUsers = dbSnapshot?.users?.filter(u => u.status === "pending");
+  const pendingUsers = dbSnapshot?.users?.filter((u: User) => u.status === "pending");
 
   const btn = (id: string, label: string, icon: React.ReactNode) => (
     <button
@@ -25,7 +35,7 @@ export default function Navbar() {
         {btn("tickets", "Tickets", <Ticket className="w-4 h-4" />)}
         {(currentUser?.role === "admin" || currentUser?.role === "sales") &&
           btn("create", "Create Ticket", <Plus className="w-4 h-4" />)}
-        {currentUser.role === "skilled" &&
+        {currentUser?.role === "skilled" &&
           btn("skills", "My Skills", <Settings className="w-4 h-4" />)}
         {currentUser?.role === "admin" &&
           btn("users", "Users", (
