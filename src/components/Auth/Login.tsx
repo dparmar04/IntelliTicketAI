@@ -62,7 +62,12 @@ export default function Login() {
             </button>
           </p>
         </div>
-
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm">
+          <p className="font-medium text-blue-900 mb-2">Demo Accounts:</p>
+          <p className="text-blue-800">Admin: admin@company.com / admin123</p>
+          <p className="text-blue-800">Sales: john@gmail.com / john123</p>
+          <p className="text-blue-800">Skilled: alice@gmail.com / alice123</p>
+        </div>
       </div>
     </div>
   );

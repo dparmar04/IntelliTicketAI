@@ -17,7 +17,8 @@ app.use(cors({
     "https://intelli-ticket-ai.vercel.app",
     "http://localhost:5173",
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
 app.use(express.json());
