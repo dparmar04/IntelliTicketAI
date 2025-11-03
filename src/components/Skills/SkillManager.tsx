@@ -3,6 +3,7 @@ import React from "react";
 import { Plus, X } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
 import type { Ticket } from "../../types/model";
+import toast from "react-hot-toast";
 
 interface PerfCardProps {
   label: string;
@@ -16,7 +17,7 @@ export default function SkillManager() {
 
   const visibleTickets = dbSnapshot?.tickets?.filter((t: Ticket) => t.assignedTo === currentUser?._id);
   const addSkill = () => {
-    if (!newSkill.trim() || !currentUser?._id) return;
+    if (!newSkill.trim() || !currentUser?._id) return toast.error("Please add skill");;
     handleAddSkill(currentUser._id, newSkill.toLowerCase());
     setNewSkill('');
   };
@@ -37,7 +38,7 @@ export default function SkillManager() {
             currentUser.skills.map((skill: string) => (
               <div key={skill} className="flex items-center space-x-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-lg">
                 <span className="font-medium">{skill}</span>
-                <button onClick={() => removeSkill(skill)} className="text-blue-600 hover:text-blue-800">
+                <button onClick={() => removeSkill(skill)} className="text-blue-600 hover:text-blue-800 cursor-pointer">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -55,7 +56,7 @@ export default function SkillManager() {
             className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500"
             placeholder="e.g., billing, technical"
           />
-          <button onClick={addSkill} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center space-x-2">
+          <button onClick={addSkill} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center space-x-2 cursor-pointer">
             <Plus className="w-4 h-4" />
             <span>Add</span>
           </button>

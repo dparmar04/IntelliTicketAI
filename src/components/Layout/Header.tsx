@@ -24,7 +24,7 @@ export default function Header() {
               {currentUser?.role.toUpperCase()}
             </span>
           </div>
-          <button onClick={handleLogout} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
+          <button onClick={handleLogout} className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg cursor-pointer">
             <LogOut className="w-5 h-5" />
           </button>
         </div>

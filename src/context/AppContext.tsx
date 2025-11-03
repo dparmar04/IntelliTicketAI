@@ -1,6 +1,7 @@
 // src/context/AppContext.tsx
 import { createContext, useContext, useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import type { User, Ticket, TicketForm } from "../types/model";
+import toast from "react-hot-toast";
 
 interface DBSnapshot {
   users: User[];
@@ -133,10 +134,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       });
       const data = await res.json();
       if (!res.ok) {
-        if (data.error === "pending")
+        if (data.error === "pending") {
           setError("Your account is pending admin approval");
-        else if (data.error === "rejected")
+          toast.success("Account created! Waiting for admin approval.");
+        }
+
+        else if (data.error === "rejected") {
           setError("Your account has been rejected. Please contact admin.");
+          toast.error("Your account has been rejected. Please contact admin");
+        }
         else setError(data.error || "Login failed");
         return;
       }
@@ -144,6 +150,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("currentUser", JSON.stringify(data.user));
       setScreen("app");
       setSuccess(`Welcome back, ${data.user.name}!`);
+      toast.success(`Wohoo!🥳 Welcome back, ${data.user.name}!`);
       setTimeout(() => setSuccess(""), 3000);
       refreshSnapshot();
     } catch (err) {
@@ -171,6 +178,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
       setSuccess("Account created! Waiting for admin approval.");
+      toast.success("Account created! Waiting for admin approval.");
       setTimeout(() => {
         setScreen("login");
         setSuccess("");
@@ -186,6 +194,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
     setScreen("login");
+    toast.success("Logout succesfully!.");
     setActiveTab("dashboard");
   };
 
@@ -283,10 +292,62 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     refreshSnapshot();
   };
 
-  const handleAddSkill = async (skill: string) => {
-    if (!currentUser) return;
+  // const handleAddSkill = async (skill: string) => {
+  //   if (!currentUser) return;
+  //   try {
+  //     const patch = await fetch(`${API_BASE}/users/${currentUser._id}/skills/add`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ skill }),
+  //     });
+
+  //     if (!patch.ok) {
+  //       setError("Failed to add skill");
+  //       return;
+  //     }
+
+  //     const res = await fetch(`${API_BASE}/users/${currentUser._id}`);
+  //     const updatedUser = await res.json();
+  //     setCurrentUser(updatedUser);
+  //     setSuccess("Skill added successfully");
+  //     setTimeout(() => setSuccess(""), 3000);
+  //     refreshSnapshot();
+  //   } catch (err) {
+  //     console.error("❌ Error adding skill:", err);
+  //     setError("Network error while adding skill");
+  //   }
+  // };
+
+  // const handleRemoveSkill = async (skill: string) => {
+  //   if (!currentUser) return;
+  //   try {
+  //     const patch = await fetch(`${API_BASE}/users/${currentUser._id}/skills/remove`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ skill }),
+  //     });
+
+  //     if (!patch.ok) {
+  //       setError("Failed to remove skill");
+  //       return;
+  //     }
+
+  //     const res = await fetch(`${API_BASE}/users/${currentUser._id}`);
+  //     const updatedUser = await res.json();
+  //     setCurrentUser(updatedUser);
+  //     setSuccess("Skill removed successfully");
+  //     setTimeout(() => setSuccess(""), 3000);
+  //     refreshSnapshot();
+  //   } catch (err) {
+  //     console.error("❌ Error removing skill:", err);
+  //     setError("Network error while removing skill");
+  //   }
+  // };
+  const handleAddSkill = async (userId: string, skill: string) => {
+    if (!userId || !skill.trim()) return;
+
     try {
-      const patch = await fetch(`${API_BASE}/users/${currentUser._id}/skills/add`, {
+      const patch = await fetch(`${API_BASE}/users/${userId}/skills/add`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ skill }),
@@ -297,10 +358,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const res = await fetch(`${API_BASE}/users/${currentUser._id}`);
+      const res = await fetch(`${API_BASE}/users/${userId}`);
       const updatedUser = await res.json();
       setCurrentUser(updatedUser);
       setSuccess("Skill added successfully");
+      toast.success("New Skills Added 😏");
       setTimeout(() => setSuccess(""), 3000);
       refreshSnapshot();
     } catch (err) {
@@ -309,10 +371,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const handleRemoveSkill = async (skill: string) => {
-    if (!currentUser) return;
+  const handleRemoveSkill = async (userId: string, skill: string) => {
+    if (!userId || !skill.trim()) return;
+
     try {
-      const patch = await fetch(`${API_BASE}/users/${currentUser._id}/skills/remove`, {
+      const patch = await fetch(`${API_BASE}/users/${userId}/skills/remove`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ skill }),
@@ -323,10 +386,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const res = await fetch(`${API_BASE}/users/${currentUser._id}`);
+      const res = await fetch(`${API_BASE}/users/${userId}`);
       const updatedUser = await res.json();
       setCurrentUser(updatedUser);
-      setSuccess("Skill removed successfully");
+      setSuccess("Skill removed successfully ✅");
+      toast.success("Skill Removed!!");
       setTimeout(() => setSuccess(""), 3000);
       refreshSnapshot();
     } catch (err) {
@@ -334,7 +398,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       setError("Network error while removing skill");
     }
   };
-
   // ===============================
   // CONTEXT VALUE
   // ===============================

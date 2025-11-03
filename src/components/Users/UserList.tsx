@@ -55,7 +55,7 @@ export default function UserList() {
                   Assigned:{" "}
                   {
                     dbSnapshot.tickets?.filter(
-                      (t: Ticket) => t.assignedTo === user.id && t.status !== "resolved"
+                      (t: Ticket) => t.assignedTo === user._id && t.status !== "resolved"
                     ).length
                   }{" "}
                   tickets
@@ -64,7 +64,7 @@ export default function UserList() {
               {user.role === "sales" && (
                 <p>
                   Created:{" "}
-                  {dbSnapshot.tickets?.filter((t: Ticket) => t.createdBy === (user.id || "")).length} tickets
+                  {dbSnapshot.tickets?.filter((t: Ticket) => t.createdBy === (user._id || "")).length} tickets
                 </p>
               )}
             </div>

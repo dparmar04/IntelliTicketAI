@@ -1,9 +1,12 @@
 // src/components/Tickets/TicketCard.tsx
+import { useState } from 'react'
 import { Brain, Trash2 } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
 import { getStatusIcon, getPriorityColor } from "../../utils/uiHelper"
 import Markdown from "react-markdown";
 import type { Ticket, User } from "../../types/model";
+import toast from "react-hot-toast";
+
 
 export default function TicketCard({ ticket }: { ticket: Ticket }) {
   const {
@@ -14,6 +17,8 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
     dbSnapshot
   } = useAppContext();
 
+
+  const [tempAgent, setTempAgent] = useState<{ [key: string]: string }>({});
   const skilledUsers = dbSnapshot?.users?.filter((u: User) => u.role === "skilled" && u.status === "active");
 
   return (
@@ -56,7 +61,7 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
               {ticket.status === "open" && (
                 <button
                   onClick={() => handleUpdateTicketStatus(ticket._id || ticket.id, "in-progress")}
-                  className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600"
+                  className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600 cursor-pointer"
                 >
                   Start Working
                 </button>
@@ -74,21 +79,44 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
 
           {/* Admin Reassignment */}
           {currentUser?.role === "admin" && (
-            <div className="mt-4">
+            <div className="mt-4 flex items-center space-x-2">
               <select
-                onChange={e => handleReassignTicket(ticket.id, e.target.value)}
-                defaultValue={ticket.assignedTo ?? ""}
+                value={tempAgent[ticket._id] || ""}
+                onChange={(e) =>
+                  setTempAgent((prev) => ({ ...prev, [ticket._id]: e.target.value }))
+                }
                 className="px-3 py-1 border border-gray-300 rounded text-sm"
               >
-                <option value="">Reassign to...</option>
+                <option value="">Select agent...</option>
                 {skilledUsers.map((u: User) => (
-                  <option key={u.id} value={u.id ?? ""}>
+                  <option key={u._id} value={u._id}>
                     {u.name} ({u.skills.join(", ")})
                   </option>
                 ))}
               </select>
+
+              <button
+                onClick={async () => {
+                  const selectedAgentId = tempAgent[ticket._id];
+                  if (!selectedAgentId) {
+                    toast.error("⚠️ Please select an agent before reassigning.");
+                    return;
+                  }
+                  try {
+                    await handleReassignTicket(ticket._id, selectedAgentId);
+                    toast.success("✅ Ticket reassigned successfully!");
+                  } catch (error) {
+                    toast.error("❌ Failed to reassign ticket. Try again.");
+                  }
+                }}
+                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm transition-all duration-300 cursor-pointer"
+              >
+                Reassign
+              </button>
             </div>
           )}
+
+
         </div>
 
         <div className="flex flex-col items-end space-y-2">

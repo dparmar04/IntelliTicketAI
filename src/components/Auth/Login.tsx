@@ -1,11 +1,14 @@
 // src/components/Auth/Login.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { Brain } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
-  const { error, success, setScreen, handleLogin } = useAppContext();
+  const { error, success, setScreen, handleLogin, currentUser } = useAppContext();
   const [form, setForm] = React.useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const submit = () => handleLogin(form.email, form.password);
 
@@ -15,6 +18,12 @@ export default function Login() {
       submit();
     }
   };
+  // 👇 Redirect user automatically after successful login
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/app/dashboard");
+    }
+  }, [currentUser, navigate]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4" onKeyDown={handleKeyPress}>
