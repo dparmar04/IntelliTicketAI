@@ -24,6 +24,7 @@ type Feature = {
   title: string;
   description: string;
   color: string;
+  gradient?: string;
 };
 
 type Step = {
@@ -48,6 +49,8 @@ type Problem = {
   icon: React.ReactNode;
   text: string;
 };
+
+const roles: ("admin" | "sales" | "skilled")[] = ["admin", "sales", "skilled"];
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -505,7 +508,7 @@ const Home: React.FC = () => {
 
           {/* Role Tabs */}
           <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-8 sm:mb-12 px-4">
-            {['admin', 'sales', 'skilled'].map((role) => (
+            {roles.map((role) => (
               <button
                 key={role}
                 onClick={() => setActiveRole(role)}
@@ -514,7 +517,11 @@ const Home: React.FC = () => {
                   : 'bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 hover:bg-white/10'
                   }`}
               >
-                {role === 'admin' ? '👑 Admin' : role === 'sales' ? '💼 Sales' : '🎯 Support Agent'}
+                {role === "admin"
+                  ? "👑 Admin"
+                  : role === "sales"
+                    ? "💼 Sales"
+                    : "🎯 Support Agent"}
               </button>
             ))}
           </div>
