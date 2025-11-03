@@ -13,6 +13,7 @@ const app = express();
 
 app.use(cors({
   origin: [
+    "https://support-ticket-ai.vercel.app",
     "https://intelli-ticket-ai.vercel.app",
     "http://localhost:5173",
   ],
