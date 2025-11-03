@@ -55,7 +55,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [success, setSuccess] = useState("");
 
   const API_BASE =
-    import.meta.env.REACT_APP_API_BASE || "http://localhost:5000/api";
+    import.meta.env.VITE_API_BASE ?? "http://localhost:5000/api";
+
 
   // Helper: fetch all data snapshot (users + tickets)
   const refreshSnapshot = async () => {
