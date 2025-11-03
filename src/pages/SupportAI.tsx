@@ -1,4 +1,4 @@
-import { AppProvider, useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/AppContext";
 import Header from "../components/Layout/Header";
 import Navbar from "../components/Layout/Navbar";
 import Login from "../components/Auth/Login";
@@ -38,8 +38,6 @@ function AppContent() {
 
 export default function SupportAI() {
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    <AppContent />
   );
 }
