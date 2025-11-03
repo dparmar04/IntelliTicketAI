@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import Header from "../components/Layout/Header";
 import Navbar from "../components/Layout/Navbar";
@@ -12,7 +12,7 @@ import UserList from "../components/Users/UserList";
 import PendingApprovals from "../components/Users/PendingApprovals";
 
 function AppContent() {
-  const { screen, activeTab } = useAppContext();
+  const { screen } = useAppContext();
 
   if (screen === "login") return <Login />;
   if (screen === "signup") return <Signup />;
