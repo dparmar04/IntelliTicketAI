@@ -1,3 +1,4 @@
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import Header from "../components/Layout/Header";
 import Navbar from "../components/Layout/Navbar";
@@ -21,7 +22,7 @@ function AppContent() {
       <Header />
       <Navbar />
       <main className="p-6">
-        {activeTab === "dashboard" && <Dashboard />}
+        {/* {activeTab === "dashboard" && <Dashboard />}
         {activeTab === "tickets" && <TicketList />}
         {activeTab === "create" && <CreateTicket />}
         {activeTab === "skills" && <SkillManager />}
@@ -30,7 +31,22 @@ function AppContent() {
             <PendingApprovals />
             <UserList />
           </>
-        )}
+        )} */}
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/tickets" element={<TicketList />} />
+          <Route path="/create" element={<CreateTicket />} />
+          <Route path="/skills" element={<SkillManager />} />
+          <Route
+            path="/users"
+            element={
+              <>
+                <PendingApprovals />
+                <UserList />
+              </>
+            }
+          />
+        </Routes>
       </main>
     </div>
   );
